@@ -83,11 +83,11 @@ const themes = {
 };
 
 const paragraphs = [
-  "The quick brown fox jumps over the lazy dog. Programming is the art of telling another human what one wants the computer to do.",
-  "Success is not final, failure is not fatal: it is the courage to continue that counts. Code is like humor. When you have to explain it, it is bad.",
-  "In the middle of difficulty lies opportunity. The only way to do great work is to love what you do. Innovation distinguishes between a leader and a follower.",
-  "Technology is best when it brings people together. The Web does not just connect machines, it connects people. Data is the new oil.",
-  "Simplicity is the ultimate sophistication. Design is not just what it looks like and feels like. Design is how it works."
+  "If you see me fighting with a bear, help the bear. The only way to do great work is to love what you do. The best way to predict the future is to invent it.",
+  "Real self confidence does not come from shouting affirmations in the mirror. It comes from shocasing the world irrefutable proof that you are who you say you are.",
+  "You can be depressed and still get things done. Its called being an adult. The only limit to our realization of tomorrow will be our doubts of today.",
+  "I am not saying that its impossible to find love all i am saying is that statistically you you have not; form the bottom of my heart I believe that 80 percent of relationship in the world is horseshit. A bunch of people who neve took time to learn how to be alone therfore never learned how to love themself, so you employed some one else to do it.Technology is best when it brings people together. The Web does not just connect machines, it connects people. Data is the new oil.",
+  "Accept people as they are, but place them where they belong. You are the CEO of your life. Hire, fire and promote accordingly. "
 ];
 
 export default function App() {
