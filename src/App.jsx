@@ -90,7 +90,7 @@ const paragraphs = [
   "I am not saying that its impossible to find love all I am saying is that statistically you you have not; from the bottom of my heart I believe that 80 percent of relationship in the world is horseshit. A bunch of people who never took time to learn how to be alone therefore never learned how to love themself, so you employed some one else to do it.",
   "Accept people as they are, but place them where they belong. You are the CEO of your life. Hire, fire and promote accordingly.",
   "The ironic tragedy is that life has to be lived forward but can only make sense backward.",
-  "Prople crave intimacy, yet fear being truly seen.And so they settle for shallow connections and calling it love. While dying quietly of loneliness. "
+  "Prople crave intimacy, yet fear being truly seen. And so they settle for shallow connections and calling it love. While dying quietly of loneliness. "
 ];
 
 export default function App() {
