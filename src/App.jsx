@@ -88,7 +88,8 @@ const paragraphs = [
   "You can be depressed and still get things done. Its called being an adult. The only limit to our realization of tomorrow will be our doubts of today.",
   "The depth of my consciousness causes me to suffer. Is it a blessing or a cures to feel every thing so deeply? The only way out is through. You take more of the thing that is poisoning you until it becomes a tonic that girdles the world around you.",
   "I am not saying that its impossible to find love all I am saying is that statistically you you have not; from the bottom of my heart I believe that 80 percent of relationship in the world is horseshit. A bunch of people who never took time to learn how to be alone therefore never learned how to love themself, so you employed some one else to do it.",
-  "Accept people as they are, but place them where they belong. You are the CEO of your life. Hire, fire and promote accordingly."
+  "Accept people as they are, but place them where they belong. You are the CEO of your life. Hire, fire and promote accordingly.",
+  "The ironic tragedy is that life has to be lived forward but can only make sense backward."
 ];
 
 export default function App() {
