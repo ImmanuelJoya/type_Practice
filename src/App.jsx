@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Timer, 
-  Zap, 
-  Target, 
-  RefreshCw, 
+import {
+  Timer,
+  Zap,
+  Target,
+  RefreshCw,
   Trophy,
   Keyboard,
   Volume2,
@@ -15,8 +15,11 @@ import {
   Star,
   Smartphone,
   Monitor,
-  Eye
+  Eye,
+  Gamepad2
 } from 'lucide-react';
+
+import WordFallGame from './components/WordFallGame';
 
 // High-contrast, accessible themes
 const themes = {
@@ -109,7 +112,7 @@ export default function App() {
   const [highScore, setHighScore] = useState(0);
   const [isFocused, setIsFocused] = useState(true);
   const [fontSize, setFontSize] = useState('text-2xl');
-  
+
   const inputRef = useRef(null);
   const containerRef = useRef(null);
   const intervalRef = useRef(null);
@@ -135,7 +138,7 @@ export default function App() {
     initGame();
     const saved = localStorage.getItem('typePracticeHighScore');
     if (saved) setHighScore(parseInt(saved));
-    
+
     // Check system preference for theme
     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
       setTheme('light');
@@ -157,10 +160,10 @@ export default function App() {
   useEffect(() => {
     const handleFocus = () => setIsFocused(true);
     const handleBlur = () => setIsFocused(false);
-    
+
     window.addEventListener('focus', handleFocus);
     window.addEventListener('blur', handleBlur);
-    
+
     return () => {
       window.removeEventListener('focus', handleFocus);
       window.removeEventListener('blur', handleBlur);
@@ -171,15 +174,15 @@ export default function App() {
     setIsActive(false);
     setIsFinished(true);
     clearInterval(intervalRef.current);
-    
+
     const timeElapsed = 60 - timeLeft;
     const minutes = timeElapsed / 60;
     const wpmCalc = Math.round((characters / 5) / minutes) || 0;
     const accuracyCalc = Math.round(((characters - errors) / characters) * 100) || 0;
-    
+
     setWpm(wpmCalc);
     setAccuracy(accuracyCalc);
-    
+
     if (wpmCalc > highScore) {
       setHighScore(wpmCalc);
       localStorage.setItem('typePracticeHighScore', wpmCalc.toString());
@@ -190,7 +193,7 @@ export default function App() {
     if (!isActive && !isFinished) {
       setIsActive(true);
     }
-    
+
     const value = e.target.value;
     setInput(value);
     setCharacters(value.length);
@@ -212,8 +215,8 @@ export default function App() {
 
   const getCharClass = (charIndex) => {
     if (charIndex < input.length) {
-      return input[charIndex] === currentText[charIndex] 
-        ? currentTheme.correct 
+      return input[charIndex] === currentText[charIndex]
+        ? currentTheme.correct
         : currentTheme.incorrect;
     }
     if (charIndex === input.length) {
@@ -225,6 +228,8 @@ export default function App() {
   const toggleTheme = () => {
     setTheme(prev => prev === 'dark' ? 'light' : prev === 'light' ? 'ocean' : 'dark');
   };
+
+  const [showGame, setShowGame] = useState(false);
 
   return (
     <div className={`min-h-screen ${currentTheme.bg} transition-colors duration-500`}>
@@ -249,19 +254,19 @@ export default function App() {
             <div className="flex items-center gap-2 md:gap-4">
               {/* Font Size Toggle */}
               <div className="hidden md:flex items-center gap-1 bg-slate-800/50 rounded-lg p-1">
-                <button 
+                <button
                   onClick={() => setFontSize('text-xl')}
                   className={`p-1.5 rounded ${fontSize === 'text-xl' ? 'bg-slate-600 text-white' : currentTheme.textMuted}`}
                 >
                   <span className="text-xs font-bold">A</span>
                 </button>
-                <button 
+                <button
                   onClick={() => setFontSize('text-2xl')}
                   className={`p-1.5 rounded ${fontSize === 'text-2xl' ? 'bg-slate-600 text-white' : currentTheme.textMuted}`}
                 >
                   <span className="text-sm font-bold">A</span>
                 </button>
-                <button 
+                <button
                   onClick={() => setFontSize('text-3xl')}
                   className={`p-1.5 rounded ${fontSize === 'text-3xl' ? 'bg-slate-600 text-white' : currentTheme.textMuted}`}
                 >
@@ -269,15 +274,25 @@ export default function App() {
                 </button>
               </div>
 
+              {/* game icon */}
+
+              <button
+                onClick={() => setShowGame(true)}
+                className={`p-2.5 rounded-xl ${currentTheme.card} border ${currentTheme.border} ${currentTheme.surfaceHover} transition-all hidden sm:block`}
+
+              >
+                <Gamepad2 className={`w-5 h-5 ${currentTheme.accent}`} />
+              </button>
+                    {showGame && <WordFallGame onClose={() => setShowGame(false)} />}
               {/* Theme Toggle */}
               <button
                 onClick={toggleTheme}
                 className={`p-2.5 rounded-xl ${currentTheme.card} border ${currentTheme.border} ${currentTheme.surfaceHover} transition-all`}
                 title={`Current: ${currentTheme.name}`}
               >
-                {theme === 'light' ? <Sun className={`w-5 h-5 ${currentTheme.accent}`} /> : 
-                 theme === 'ocean' ? <Eye className={`w-5 h-5 ${currentTheme.accent}`} /> : 
-                 <Moon className={`w-5 h-5 ${currentTheme.accent}`} />}
+                {theme === 'light' ? <Sun className={`w-5 h-5 ${currentTheme.accent}`} /> :
+                  theme === 'ocean' ? <Eye className={`w-5 h-5 ${currentTheme.accent}`} /> :
+                    <Moon className={`w-5 h-5 ${currentTheme.accent}`} />}
               </button>
 
               {/* Sound Toggle */}
@@ -335,7 +350,7 @@ export default function App() {
         >
           {/* Progress Bar */}
           <div className="absolute top-0 left-0 right-0 h-1.5 bg-slate-700/30 rounded-t-2xl md:rounded-t-3xl overflow-hidden">
-            <motion.div 
+            <motion.div
               className={`h-full ${currentTheme.accentBg}`}
               initial={{ width: 0 }}
               animate={{ width: `${(input.length / currentText.length) * 100}%` }}
@@ -355,14 +370,14 @@ export default function App() {
                 </span>
               ))}
             </p>
-            
+
             {/* Blinking Cursor */}
             {!isFinished && (
               <motion.span
                 animate={{ opacity: [1, 0] }}
                 transition={{ duration: 0.8, repeat: Infinity }}
                 className={`absolute h-6 md:h-8 w-0.5 ${currentTheme.cursor} top-1`}
-                style={{ 
+                style={{
                   left: `${Math.min((input.length / currentText.length) * 100, 98)}%`,
                   transform: 'translateX(-50%)'
                 }}
@@ -484,8 +499,8 @@ export default function App() {
             disabled={isActive}
             className={`
               w-full sm:w-auto px-6 py-3 rounded-xl font-semibold flex items-center justify-center gap-2 transition-all
-              ${isActive 
-                ? 'opacity-50 cursor-not-allowed bg-gray-700 text-gray-400' 
+              ${isActive
+                ? 'opacity-50 cursor-not-allowed bg-gray-700 text-gray-400'
                 : `${currentTheme.accentBg} text-white hover:opacity-90 shadow-lg hover:shadow-xl`
               }
             `}
@@ -509,7 +524,7 @@ export default function App() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
-            onClick={() => {}} // Prevent closing on background click
+            onClick={() => { }} // Prevent closing on background click
           >
             <motion.div
               initial={{ scale: 0.9, y: 20 }}
