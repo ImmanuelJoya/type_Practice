@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import {
   Timer,
   Zap,
@@ -11,7 +12,6 @@ import {
   VolumeX,
   Sun,
   Moon,
-  ChevronRight,
   Star,
   Smartphone,
   Monitor,
@@ -21,7 +21,7 @@ import {
 
 import WordFallGame from './components/WordFallGame';
 
-// High-contrast, accessible themes
+// ─── Themes ──────────────────────────────────────────────────────────────────
 const themes = {
   dark: {
     name: 'Midnight',
@@ -41,7 +41,7 @@ const themes = {
     current: 'bg-cyan-500/40 border-b-2 border-cyan-400',
     cursor: 'bg-cyan-400',
     shadow: 'shadow-slate-950/50',
-    gradient: 'from-slate-900 to-slate-800'
+    gradient: 'from-slate-900 to-slate-800',
   },
   light: {
     name: 'Daylight',
@@ -61,7 +61,7 @@ const themes = {
     current: 'bg-blue-200/70 border-b-2 border-blue-600',
     cursor: 'bg-blue-600',
     shadow: 'shadow-gray-200',
-    gradient: 'from-gray-100 to-white'
+    gradient: 'from-gray-100 to-white',
   },
   ocean: {
     name: 'Ocean',
@@ -81,41 +81,42 @@ const themes = {
     current: 'bg-cyan-400/40 border-b-2 border-cyan-300',
     cursor: 'bg-cyan-300',
     shadow: 'shadow-blue-950/50',
-    gradient: 'from-blue-900 to-slate-900'
-  }
+    gradient: 'from-blue-900 to-slate-900',
+  },
 };
 
 const paragraphs = [
   "If you see me fighting with a bear, help the bear. The only way to do great work is to love what you do. The best way to predict the future is to invent it.",
-  "Real self confidence does not come from shouting affirmations in the mirror. It comes from shocasing the world irrefutable proof that you are who you say you are.",
+  "Real self confidence does not come from shouting affirmations in the mirror. It comes from showcasing the world irrefutable proof that you are who you say you are.",
   "You can be depressed and still get things done. Its called being an adult. The only limit to our realization of tomorrow will be our doubts of today.",
-  "The depth of my consciousness causes me to suffer. Is it a blessing or a cures to feel every thing so deeply? The only way out is through. You take more of the thing that is poisoning you until it becomes a tonic that girdles the world around you.",
-  "I am not saying that its impossible to find love all I am saying is that statistically you you have not; from the bottom of my heart I believe that 80 percent of relationship in the world is horseshit. A bunch of people who never took time to learn how to be alone therefore never learned how to love themself, so you employed some one else to do it.",
+  "The depth of my consciousness causes me to suffer. Is it a blessing or a curse to feel everything so deeply? The only way out is through.",
   "Accept people as they are, but place them where they belong. You are the CEO of your life. Hire, fire and promote accordingly.",
   "The ironic tragedy is that life has to be lived forward but can only make sense backward.",
-  "Prople crave intimacy, yet fear being truly seen. And so they settle for shallow connections and calling it love. While dying quietly of loneliness. "
+  "People crave intimacy, yet fear being truly seen. And so they settle for shallow connections and call it love, while dying quietly of loneliness.",
 ];
 
-export default function App() {
-  const [theme, setTheme] = useState('dark');
-  const [currentText, setCurrentText] = useState('');
-  const [input, setInput] = useState('');
-  const [timeLeft, setTimeLeft] = useState(60);
-  const [isActive, setIsActive] = useState(false);
-  const [isFinished, setIsFinished] = useState(false);
-  const [wpm, setWpm] = useState(0);
-  const [accuracy, setAccuracy] = useState(100);
-  const [errors, setErrors] = useState(0);
-  const [characters, setCharacters] = useState(0);
+// ─── Home Page ────────────────────────────────────────────────────────────────
+function HomePage() {
+  const navigate = useNavigate();
+
+  const [theme, setTheme]               = useState('dark');
+  const [currentText, setCurrentText]   = useState('');
+  const [input, setInput]               = useState('');
+  const [timeLeft, setTimeLeft]         = useState(60);
+  const [isActive, setIsActive]         = useState(false);
+  const [isFinished, setIsFinished]     = useState(false);
+  const [wpm, setWpm]                   = useState(0);
+  const [accuracy, setAccuracy]         = useState(100);
+  const [errors, setErrors]             = useState(0);
+  const [characters, setCharacters]     = useState(0);
   const [soundEnabled, setSoundEnabled] = useState(false);
   const [showKeyboard, setShowKeyboard] = useState(false);
-  const [highScore, setHighScore] = useState(0);
-  const [isFocused, setIsFocused] = useState(true);
-  const [fontSize, setFontSize] = useState('text-2xl');
+  const [highScore, setHighScore]       = useState(0);
+  const [isFocused, setIsFocused]       = useState(true);
+  const [fontSize, setFontSize]         = useState('text-2xl');
 
-  const inputRef = useRef(null);
-  const containerRef = useRef(null);
-  const intervalRef = useRef(null);
+  const inputRef     = useRef(null);
+  const intervalRef  = useRef(null);
   const currentTheme = themes[theme];
 
   const initGame = useCallback(() => {
@@ -130,7 +131,6 @@ export default function App() {
     setErrors(0);
     setCharacters(0);
     if (intervalRef.current) clearInterval(intervalRef.current);
-    // Auto-focus after reset
     setTimeout(() => inputRef.current?.focus(), 100);
   }, []);
 
@@ -138,32 +138,23 @@ export default function App() {
     initGame();
     const saved = localStorage.getItem('typePracticeHighScore');
     if (saved) setHighScore(parseInt(saved));
-
-    // Check system preference for theme
-    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
-      setTheme('light');
-    }
+    if (window.matchMedia?.('(prefers-color-scheme: light)').matches) setTheme('light');
   }, [initGame]);
 
   useEffect(() => {
     if (isActive && timeLeft > 0) {
-      intervalRef.current = setInterval(() => {
-        setTimeLeft((prev) => prev - 1);
-      }, 1000);
+      intervalRef.current = setInterval(() => setTimeLeft(prev => prev - 1), 1000);
     } else if (timeLeft === 0) {
       finishGame();
     }
     return () => clearInterval(intervalRef.current);
   }, [isActive, timeLeft]);
 
-  // Handle focus/blur globally
   useEffect(() => {
     const handleFocus = () => setIsFocused(true);
-    const handleBlur = () => setIsFocused(false);
-
+    const handleBlur  = () => setIsFocused(false);
     window.addEventListener('focus', handleFocus);
     window.addEventListener('blur', handleBlur);
-
     return () => {
       window.removeEventListener('focus', handleFocus);
       window.removeEventListener('blur', handleBlur);
@@ -174,15 +165,12 @@ export default function App() {
     setIsActive(false);
     setIsFinished(true);
     clearInterval(intervalRef.current);
-
     const timeElapsed = 60 - timeLeft;
-    const minutes = timeElapsed / 60;
-    const wpmCalc = Math.round((characters / 5) / minutes) || 0;
-    const accuracyCalc = Math.round(((characters - errors) / characters) * 100) || 0;
-
+    const minutes     = timeElapsed / 60;
+    const wpmCalc     = Math.round((characters / 5) / minutes) || 0;
+    const accCalc     = Math.round(((characters - errors) / characters) * 100) || 0;
     setWpm(wpmCalc);
-    setAccuracy(accuracyCalc);
-
+    setAccuracy(accCalc);
     if (wpmCalc > highScore) {
       setHighScore(wpmCalc);
       localStorage.setItem('typePracticeHighScore', wpmCalc.toString());
@@ -190,27 +178,16 @@ export default function App() {
   };
 
   const handleInput = (e) => {
-    if (!isActive && !isFinished) {
-      setIsActive(true);
-    }
-
+    if (!isActive && !isFinished) setIsActive(true);
     const value = e.target.value;
     setInput(value);
     setCharacters(value.length);
-
     let errorCount = 0;
     for (let i = 0; i < value.length; i++) {
       if (value[i] !== currentText[i]) errorCount++;
     }
     setErrors(errorCount);
-
-    if (value === currentText) {
-      finishGame();
-    }
-  };
-
-  const handleContainerClick = () => {
-    inputRef.current?.focus();
+    if (value === currentText) finishGame();
   };
 
   const getCharClass = (charIndex) => {
@@ -219,21 +196,16 @@ export default function App() {
         ? currentTheme.correct
         : currentTheme.incorrect;
     }
-    if (charIndex === input.length) {
-      return `${currentTheme.current} rounded px-0.5`;
-    }
-    return `${currentTheme.textSecondary}`;
+    if (charIndex === input.length) return `${currentTheme.current} rounded px-0.5`;
+    return currentTheme.textSecondary;
   };
 
-  const toggleTheme = () => {
+  const toggleTheme = () =>
     setTheme(prev => prev === 'dark' ? 'light' : prev === 'light' ? 'ocean' : 'dark');
-  };
-
-  const [showGame, setShowGame] = useState(false);
 
   return (
     <div className={`min-h-screen ${currentTheme.bg} transition-colors duration-500`}>
-      {/* Navigation Bar */}
+      {/* ── Navbar ── */}
       <nav className={`${currentTheme.surface} border-b ${currentTheme.border} sticky top-0 z-40 backdrop-blur-md bg-opacity-90`}>
         <div className="max-w-6xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
@@ -251,59 +223,53 @@ export default function App() {
             </div>
 
             {/* Controls */}
-            <div className="flex items-center gap-2 md:gap-4">
-              {/* Font Size Toggle */}
+            <div className="flex items-center gap-2 md:gap-3">
+              {/* Font size */}
               <div className="hidden md:flex items-center gap-1 bg-slate-800/50 rounded-lg p-1">
-                <button
-                  onClick={() => setFontSize('text-xl')}
-                  className={`p-1.5 rounded ${fontSize === 'text-xl' ? 'bg-slate-600 text-white' : currentTheme.textMuted}`}
-                >
-                  <span className="text-xs font-bold">A</span>
-                </button>
-                <button
-                  onClick={() => setFontSize('text-2xl')}
-                  className={`p-1.5 rounded ${fontSize === 'text-2xl' ? 'bg-slate-600 text-white' : currentTheme.textMuted}`}
-                >
-                  <span className="text-sm font-bold">A</span>
-                </button>
-                <button
-                  onClick={() => setFontSize('text-3xl')}
-                  className={`p-1.5 rounded ${fontSize === 'text-3xl' ? 'bg-slate-600 text-white' : currentTheme.textMuted}`}
-                >
-                  <span className="text-base font-bold">A</span>
-                </button>
+                {['text-xl', 'text-2xl', 'text-3xl'].map((size, i) => (
+                  <button
+                    key={size}
+                    onClick={() => setFontSize(size)}
+                    className={`p-1.5 rounded ${fontSize === size ? 'bg-slate-600 text-white' : currentTheme.textMuted}`}
+                  >
+                    <span className={`font-bold ${i === 0 ? 'text-xs' : i === 1 ? 'text-sm' : 'text-base'}`}>A</span>
+                  </button>
+                ))}
               </div>
 
-              {/* game icon */}
-
+              {/* 🎮 Game button — navigates to /game */}
               <button
-                onClick={() => setShowGame(true)}
-                className={`p-2.5 rounded-xl ${currentTheme.card} border ${currentTheme.border} ${currentTheme.surfaceHover} transition-all hidden sm:block`}
-
+                onClick={() => navigate('/game')}
+                className={`p-2.5 rounded-xl ${currentTheme.card} border ${currentTheme.border} ${currentTheme.surfaceHover} transition-all hidden sm:flex items-center gap-1.5`}
+                title="Word Fall Game"
               >
                 <Gamepad2 className={`w-5 h-5 ${currentTheme.accent}`} />
               </button>
-                    {showGame && <WordFallGame onClose={() => setShowGame(false)} />}
-              {/* Theme Toggle */}
+
+              {/* Theme */}
               <button
                 onClick={toggleTheme}
                 className={`p-2.5 rounded-xl ${currentTheme.card} border ${currentTheme.border} ${currentTheme.surfaceHover} transition-all`}
                 title={`Current: ${currentTheme.name}`}
               >
-                {theme === 'light' ? <Sun className={`w-5 h-5 ${currentTheme.accent}`} /> :
-                  theme === 'ocean' ? <Eye className={`w-5 h-5 ${currentTheme.accent}`} /> :
-                    <Moon className={`w-5 h-5 ${currentTheme.accent}`} />}
+                {theme === 'light'
+                  ? <Sun className={`w-5 h-5 ${currentTheme.accent}`} />
+                  : theme === 'ocean'
+                  ? <Eye className={`w-5 h-5 ${currentTheme.accent}`} />
+                  : <Moon className={`w-5 h-5 ${currentTheme.accent}`} />}
               </button>
 
-              {/* Sound Toggle */}
+              {/* Sound */}
               <button
                 onClick={() => setSoundEnabled(!soundEnabled)}
                 className={`p-2.5 rounded-xl ${currentTheme.card} border ${currentTheme.border} ${currentTheme.surfaceHover} transition-all hidden sm:block`}
               >
-                {soundEnabled ? <Volume2 className={`w-5 h-5 ${currentTheme.text}`} /> : <VolumeX className={`w-5 h-5 ${currentTheme.textMuted}`} />}
+                {soundEnabled
+                  ? <Volume2 className={`w-5 h-5 ${currentTheme.text}`} />
+                  : <VolumeX className={`w-5 h-5 ${currentTheme.textMuted}`} />}
               </button>
 
-              {/* Keyboard Toggle */}
+              {/* Keyboard */}
               <button
                 onClick={() => setShowKeyboard(!showKeyboard)}
                 className={`p-2.5 rounded-xl ${showKeyboard ? currentTheme.accentLight : ''} border ${currentTheme.border} ${currentTheme.surfaceHover} transition-all`}
@@ -315,14 +281,15 @@ export default function App() {
         </div>
       </nav>
 
+      {/* ── Main ── */}
       <main className="max-w-6xl mx-auto px-4 py-6 md:py-8">
-        {/* Stats Grid - Mobile Optimized */}
+        {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-6 md:mb-8">
           {[
-            { icon: Timer, label: 'Time', value: `${timeLeft}s`, subtext: 'seconds left' },
-            { icon: Zap, label: 'WPM', value: isFinished ? wpm : '-', subtext: highScore ? `Best: ${highScore}` : 'No record' },
-            { icon: Target, label: 'Accuracy', value: isFinished ? `${accuracy}%` : '-', subtext: `${errors} errors` },
-            { icon: Trophy, label: 'Progress', value: `${Math.round((input.length / currentText.length) * 100)}%`, subtext: `${characters} chars` }
+            { icon: Timer,  label: 'Time',     value: `${timeLeft}s`,                                              subtext: 'seconds left' },
+            { icon: Zap,    label: 'WPM',      value: isFinished ? wpm : '-',                                      subtext: highScore ? `Best: ${highScore}` : 'No record' },
+            { icon: Target, label: 'Accuracy', value: isFinished ? `${accuracy}%` : '-',                           subtext: `${errors} errors` },
+            { icon: Trophy, label: 'Progress', value: `${Math.round((input.length / (currentText.length || 1)) * 100)}%`, subtext: `${characters} chars` },
           ].map((stat, idx) => (
             <motion.div
               key={stat.label}
@@ -341,51 +308,43 @@ export default function App() {
           ))}
         </div>
 
-        {/* Typing Area - Click to Focus Fixed */}
+        {/* Typing area */}
         <motion.div
           initial={{ scale: 0.95, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           className={`relative ${currentTheme.card} border ${currentTheme.border} rounded-2xl md:rounded-3xl p-6 md:p-10 ${currentTheme.shadow} shadow-xl min-h-[200px] md:min-h-[300px] cursor-text`}
-          onClick={handleContainerClick}
+          onClick={() => inputRef.current?.focus()}
         >
-          {/* Progress Bar */}
+          {/* Progress bar */}
           <div className="absolute top-0 left-0 right-0 h-1.5 bg-slate-700/30 rounded-t-2xl md:rounded-t-3xl overflow-hidden">
             <motion.div
               className={`h-full ${currentTheme.accentBg}`}
               initial={{ width: 0 }}
-              animate={{ width: `${(input.length / currentText.length) * 100}%` }}
+              animate={{ width: `${(input.length / (currentText.length || 1)) * 100}%` }}
               transition={{ duration: 0.3 }}
             />
           </div>
 
-          {/* Text Display - High Contrast */}
+          {/* Text */}
           <div className="relative mb-4">
-            <p className={`${fontSize} md:text-3xl leading-relaxed md:leading-relaxed font-mono tracking-wide break-words`}>
+            <p className={`${fontSize} md:text-3xl leading-relaxed font-mono tracking-wide break-words`}>
               {currentText.split('').map((char, index) => (
-                <span
-                  key={index}
-                  className={`inline-block transition-all duration-150 ${getCharClass(index)}`}
-                >
+                <span key={index} className={`inline-block transition-all duration-150 ${getCharClass(index)}`}>
                   {char === ' ' ? '\u00A0' : char}
                 </span>
               ))}
             </p>
-
-            {/* Blinking Cursor */}
             {!isFinished && (
               <motion.span
                 animate={{ opacity: [1, 0] }}
                 transition={{ duration: 0.8, repeat: Infinity }}
                 className={`absolute h-6 md:h-8 w-0.5 ${currentTheme.cursor} top-1`}
-                style={{
-                  left: `${Math.min((input.length / currentText.length) * 100, 98)}%`,
-                  transform: 'translateX(-50%)'
-                }}
+                style={{ left: `${Math.min((input.length / (currentText.length || 1)) * 100, 98)}%`, transform: 'translateX(-50%)' }}
               />
             )}
           </div>
 
-          {/* Hidden Input */}
+          {/* Hidden input */}
           <input
             ref={inputRef}
             type="text"
@@ -400,7 +359,7 @@ export default function App() {
             spellCheck="false"
           />
 
-          {/* Focus Indicator - Fixed */}
+          {/* Click-to-focus overlay */}
           <AnimatePresence>
             {!isFocused && !isFinished && (
               <motion.div
@@ -408,7 +367,7 @@ export default function App() {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 className={`absolute inset-0 flex items-center justify-center ${currentTheme.surface} bg-opacity-95 backdrop-blur-sm rounded-2xl md:rounded-3xl`}
-                onClick={handleContainerClick}
+                onClick={() => inputRef.current?.focus()}
               >
                 <div className="text-center p-6">
                   <div className={`inline-flex p-4 rounded-full ${currentTheme.accentLight} mb-4`}>
@@ -422,7 +381,7 @@ export default function App() {
           </AnimatePresence>
         </motion.div>
 
-        {/* Mobile Keyboard Toggle */}
+        {/* Mobile keyboard toggle */}
         <div className="md:hidden mt-4 flex justify-center">
           <button
             onClick={() => setShowKeyboard(!showKeyboard)}
@@ -433,7 +392,7 @@ export default function App() {
           </button>
         </div>
 
-        {/* Virtual Keyboard - Responsive */}
+        {/* Virtual keyboard */}
         <AnimatePresence>
           {showKeyboard && (
             <motion.div
@@ -445,27 +404,26 @@ export default function App() {
               <div className={`${currentTheme.card} border ${currentTheme.border} rounded-2xl p-4 md:p-6 ${currentTheme.shadow} shadow-lg`}>
                 <div className="flex flex-col items-center gap-1.5 md:gap-2">
                   {[
-                    ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'],
-                    ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'],
-                    ['z', 'x', 'c', 'v', 'b', 'n', 'm']
+                    ['q','w','e','r','t','y','u','i','o','p'],
+                    ['a','s','d','f','g','h','j','k','l'],
+                    ['z','x','c','v','b','n','m'],
                   ].map((row, rowIndex) => (
-                    <div key={rowIndex} className="flex gap-1 md:gap-1.5" style={{ marginLeft: rowIndex === 1 ? '12px' : rowIndex === 2 ? '24px' : '0' }}>
+                    <div key={rowIndex} className="flex gap-1 md:gap-1.5"
+                      style={{ marginLeft: rowIndex === 1 ? '12px' : rowIndex === 2 ? '24px' : '0' }}>
                       {row.map((key) => {
-                        const isNext = input[input.length]?.toLowerCase() === key;
+                        const isNext    = input[input.length]?.toLowerCase() === key;
                         const isPressed = input[input.length - 1]?.toLowerCase() === key;
                         return (
                           <motion.div
                             key={key}
                             animate={{
                               scale: isPressed ? 0.9 : 1,
-                              backgroundColor: isNext ? 'rgba(6, 182, 212, 0.3)' : 'rgba(255,255,255,0.05)',
-                              borderColor: isNext ? 'rgba(6, 182, 212, 0.6)' : 'rgba(255,255,255,0.1)'
+                              backgroundColor: isNext ? 'rgba(6,182,212,0.3)' : 'rgba(255,255,255,0.05)',
+                              borderColor: isNext ? 'rgba(6,182,212,0.6)' : 'rgba(255,255,255,0.1)',
                             }}
-                            className={`
-                              w-7 h-9 md:w-10 md:h-12 rounded md:rounded-lg flex items-center justify-center text-xs md:text-sm font-bold border-2
+                            className={`w-7 h-9 md:w-10 md:h-12 rounded md:rounded-lg flex items-center justify-center text-xs md:text-sm font-bold border-2
                               ${theme === 'light' ? 'bg-white border-gray-200 text-gray-700' : 'text-white'}
-                              ${isNext ? currentTheme.accent : ''}
-                            `}
+                              ${isNext ? currentTheme.accent : ''}`}
                           >
                             {key}
                           </motion.div>
@@ -475,13 +433,9 @@ export default function App() {
                   ))}
                   <div className="flex gap-1 md:gap-1.5 mt-1">
                     <motion.div
-                      animate={{
-                        backgroundColor: input[input.length] === ' ' ? 'rgba(6, 182, 212, 0.3)' : 'rgba(255,255,255,0.05)'
-                      }}
-                      className={`
-                        w-32 h-9 md:w-48 md:h-12 rounded md:rounded-lg flex items-center justify-center text-xs font-bold border-2
-                        ${theme === 'light' ? 'bg-white border-gray-200 text-gray-700' : 'text-white'}
-                      `}
+                      animate={{ backgroundColor: input[input.length] === ' ' ? 'rgba(6,182,212,0.3)' : 'rgba(255,255,255,0.05)' }}
+                      className={`w-32 h-9 md:w-48 md:h-12 rounded md:rounded-lg flex items-center justify-center text-xs font-bold border-2
+                        ${theme === 'light' ? 'bg-white border-gray-200 text-gray-700' : 'text-white'}`}
                     >
                       space
                     </motion.div>
@@ -492,20 +446,17 @@ export default function App() {
           )}
         </AnimatePresence>
 
-        {/* Controls */}
+        {/* Bottom controls */}
         <div className="mt-6 md:mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
           <button
             onClick={initGame}
             disabled={isActive}
-            className={`
-              w-full sm:w-auto px-6 py-3 rounded-xl font-semibold flex items-center justify-center gap-2 transition-all
+            className={`w-full sm:w-auto px-6 py-3 rounded-xl font-semibold flex items-center justify-center gap-2 transition-all
               ${isActive
                 ? 'opacity-50 cursor-not-allowed bg-gray-700 text-gray-400'
-                : `${currentTheme.accentBg} text-white hover:opacity-90 shadow-lg hover:shadow-xl`
-              }
-            `}
+                : `${currentTheme.accentBg} text-white hover:opacity-90 shadow-lg hover:shadow-xl`}`}
           >
-            <RefreshCw className={`w-5 h-5 ${isActive ? '' : 'animate-spin-slow'}`} />
+            <RefreshCw className="w-5 h-5" />
             {isActive ? 'Test in Progress...' : 'Restart Test'}
           </button>
 
@@ -516,7 +467,7 @@ export default function App() {
         </div>
       </main>
 
-      {/* Results Modal */}
+      {/* Results modal */}
       <AnimatePresence>
         {isFinished && (
           <motion.div
@@ -524,7 +475,6 @@ export default function App() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
-            onClick={() => { }} // Prevent closing on background click
           >
             <motion.div
               initial={{ scale: 0.9, y: 20 }}
@@ -535,7 +485,7 @@ export default function App() {
                 <motion.div
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
-                  transition={{ type: "spring", stiffness: 200 }}
+                  transition={{ type: 'spring', stiffness: 200 }}
                   className={`inline-flex p-4 rounded-full ${currentTheme.accentBg} mb-4 shadow-lg`}
                 >
                   <Trophy className="w-10 h-10 text-white" />
@@ -569,10 +519,7 @@ export default function App() {
 
               <button
                 onClick={initGame}
-                className={`
-                  w-full py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition-all
-                  ${currentTheme.accentBg} text-white hover:opacity-90 shadow-lg hover:shadow-xl
-                `}
+                className={`w-full py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition-all ${currentTheme.accentBg} text-white hover:opacity-90 shadow-lg`}
               >
                 <RefreshCw className="w-5 h-5" />
                 Try Again
@@ -582,5 +529,15 @@ export default function App() {
         )}
       </AnimatePresence>
     </div>
+  );
+}
+
+// ─── Root App with Routes ─────────────────────────────────────────────────────
+export default function App() {
+  return (
+    <Routes>
+      <Route path="/"     element={<HomePage />} />
+      <Route path="/game" element={<WordFallGame onClose={() => window.location.href = '/'} />} />
+    </Routes>
   );
 }
