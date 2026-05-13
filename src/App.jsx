@@ -93,7 +93,8 @@ const paragraphs = [
   "Accept people as they are, but place them where they belong. You are the CEO of your life. Hire, fire and promote accordingly.",
   "The ironic tragedy is that life has to be lived forward but can only make sense backward.",
   "People crave intimacy, yet fear being truly seen. And so they settle for shallow connections and call it love, while dying quietly of loneliness.",
-  "You see, their morals, their code, its a bad joke. Dropped at the first sign of truble.They are only as good as the world allows them to be"
+  "You see, their morals, their code, its a bad joke. Dropped at the first sign of truble.They are only as good as the world allows them to be",
+  "I’ve wrestled with alligators, I’ve tussled with a whale. I done handcuffed lightning and throw thunder in jail. You know I’m bad. just last week, I murdered a rock, Injured a stone, Hospitalized a brick. I’m so mean, I make medicine sick."
 ];
 
 // ─── Home Page ────────────────────────────────────────────────────────────────
