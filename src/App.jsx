@@ -97,7 +97,7 @@ const paragraphs = [
   "I’ve wrestled with alligators, I’ve tussled with a whale. I done handcuffed lightning and throw thunder in jail. You know I’m bad. just last week, I murdered a rock, Injured a stone, Hospitalized a brick. I’m so mean, I make medicine sick."
 ];
 
-// ─── Home Page ────────────────────────────────────────────────────────────────
+// ─── Home Page 
 function HomePage() {
   const navigate = useNavigate();
 
@@ -283,7 +283,7 @@ function HomePage() {
         </div>
       </nav>
 
-      {/* ── Main ── */}
+      {/* Main */}
       <main className="max-w-6xl mx-auto px-4 py-6 md:py-8">
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-6 md:mb-8">
