@@ -21,7 +21,7 @@ import {
 
 import WordFallGame from './components/WordFallGame';
 
-// ─── Themes ──────────────────────────────────────────────────────────────────
+// ─── Themes 
 const themes = {
   dark: {
     name: 'Midnight',
